@@ -239,9 +239,6 @@ SENSORS_1PHASE = {
 }
 
 # Config flow
-CONF_HOST = "host"
-CONF_NAME = "name"
-CONF_TIMEOUT = "timeout"
 CONF_SCAN_INTERVAL = "scan_interval"
 
 # Error messages

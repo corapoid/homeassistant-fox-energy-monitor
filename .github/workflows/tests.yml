@@ -11,13 +11,13 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.11", "3.12"]
+        python-version: ["3.12", "3.13"]
 
     steps:
       - uses: actions/checkout@v4
 
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
 
@@ -29,16 +29,12 @@ jobs:
       - name: Lint with flake8
         run: |
           pip install flake8
-          # Stop the build if there are Python syntax errors or undefined names
           flake8 custom_components/fox_energy --count --select=E9,F63,F7,F82 --show-source --statistics
-          # Exit-zero treats all errors as warnings
           flake8 custom_components/fox_energy --count --exit-zero --max-complexity=10 --max-line-length=100 --statistics
-        continue-on-error: true
 
       - name: Test with pytest
         run: |
-          pytest tests/ -v --tb=short
-        continue-on-error: true
+          pytest tests/ -v --tb=short --cov=custom_components/fox_energy --cov-report=term-missing
 
   code-quality:
     runs-on: ubuntu-latest
@@ -47,21 +43,33 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: "3.13"
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install black isort pylint
+          pip install ruff
 
-      - name: Check code formatting with black
+      - name: Lint with ruff
         run: |
-          black --check custom_components/fox_energy tests/
-        continue-on-error: true
+          ruff check custom_components/fox_energy tests/
 
-      - name: Check import sorting with isort
+      - name: Check formatting with ruff
         run: |
-          isort --check-only custom_components/fox_energy tests/
-        continue-on-error: true
+          ruff format --check custom_components/fox_energy tests/
+
+  validate:
+    runs-on: ubuntu-latest
+    name: Validate Integration
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: HACS Validation
+        uses: hacs/action@main
+        with:
+          category: integration
+
+      - name: Hassfest Validation
+        uses: home-assistant/actions/hassfest@master

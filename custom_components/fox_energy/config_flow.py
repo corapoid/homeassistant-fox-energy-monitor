@@ -11,7 +11,6 @@ from homeassistant.const import CONF_HOST, CONF_NAME, CONF_TIMEOUT
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.data_entry_flow import FlowResult
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
-from homeassistant.helpers.typing import VolSchemaType
 
 from .api import FoxEnergyAPI, FoxEnergyConnectionError, FoxEnergyInvalidResponse
 from .const import DOMAIN, DEFAULT_TIMEOUT, DEFAULT_SCAN_INTERVAL, CONF_SCAN_INTERVAL
@@ -61,10 +60,19 @@ async def scan_network_for_devices(
     """
     found_devices = []
 
-    # If subnet not specified, try to detect from current IP
+    # If subnet not specified, try to detect from Home Assistant's network
     if subnet is None:
-        # Get router IP (simplified - in real scenario would need more logic)
-        subnet = "192.168.1"
+        # Try to get network info from HA - fallback to common private subnets
+        # This scans the most common home network ranges
+        try:
+            import socket
+            hostname = socket.gethostname()
+            local_ip = socket.gethostbyname(hostname)
+            # Extract subnet from local IP (e.g., "192.168.1.50" -> "192.168.1")
+            subnet = ".".join(local_ip.split(".")[:-1])
+        except Exception:
+            # Cannot detect network, return empty - user must enter IP manually
+            return found_devices
 
     # Scan addresses in subnet
     base_parts = subnet.rsplit(".", 1)
