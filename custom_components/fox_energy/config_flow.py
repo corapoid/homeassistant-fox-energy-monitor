@@ -65,6 +65,7 @@ async def scan_network_for_devices(
         # This scans the most common home network ranges
         try:
             import socket
+
             hostname = socket.gethostname()
             local_ip = socket.gethostbyname(hostname)
             # Extract subnet from local IP (e.g., "192.168.1.50" -> "192.168.1")
@@ -190,9 +191,7 @@ class FoxEnergyConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             },
         )
 
-    async def async_step_discovery(
-        self, discovery_info: dict[str, Any]
-    ) -> FlowResult:
+    async def async_step_discovery(self, discovery_info: dict[str, Any]) -> FlowResult:
         """Handle discovery step.
 
         Args:
@@ -202,7 +201,7 @@ class FoxEnergyConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             Flow result
         """
         host = discovery_info.get(CONF_HOST)
-        
+
         if not host:
             return self.async_abort(reason="invalid_discovery_info")
 

@@ -52,7 +52,7 @@ class FoxEnergySensor(FoxEnergyEntity, SensorEntity):
             sensor_config: Sensor configuration dict with name, unit, etc.
         """
         super().__init__(coordinator, sensor_key)
-        
+
         self._attr_name = sensor_config.get("name")
         self._attr_native_unit_of_measurement = sensor_config.get("unit")
         self._attr_device_class = sensor_config.get("device_class")
@@ -70,4 +70,6 @@ class FoxEnergySensor(FoxEnergyEntity, SensorEntity):
     @property
     def available(self) -> bool:
         """Return if entity is available."""
-        return self.coordinator.last_update_success and self.coordinator.data is not None
+        return (
+            self.coordinator.last_update_success and self.coordinator.data is not None
+        )

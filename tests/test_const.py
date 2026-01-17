@@ -150,7 +150,12 @@ class TestSensorConfigurations:
 
     def test_current_sensors_device_class(self):
         """Test current sensors have correct device class."""
-        current_sensors = ["natezenie_l1", "natezenie_l2", "natezenie_l3", "natezenie_suma"]
+        current_sensors = [
+            "natezenie_l1",
+            "natezenie_l2",
+            "natezenie_l3",
+            "natezenie_suma",
+        ]
         for key in current_sensors:
             assert SENSORS_3PHASE[key]["device_class"] == "current"
             assert SENSORS_3PHASE[key]["unit"] == "A"

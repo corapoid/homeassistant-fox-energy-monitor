@@ -71,7 +71,7 @@ class FoxEnergyAPI:
         """
         try:
             data = await self.get_current_parameters()
-            
+
             # Check if voltage is a list (3-phase) or string (1-phase)
             if isinstance(data.get("voltage"), list):
                 return DEVICE_TYPE_3PHASE
@@ -90,7 +90,7 @@ class FoxEnergyAPI:
             JSON response as dictionary
         """
         url = f"{self.base_url}{endpoint}"
-        
+
         try:
             async with aiohttp.ClientSession() as session:
                 async with session.get(
@@ -99,19 +99,21 @@ class FoxEnergyAPI:
                 ) as response:
                     if response.status == 200:
                         data = await response.json()
-                        
+
                         if data.get("status") != "ok":
                             raise FoxEnergyInvalidResponse(
                                 f"Invalid response status: {data.get('status')}"
                             )
-                        
+
                         return data
-                    
+
                     raise FoxEnergyConnectionError(
                         f"HTTP {response.status}: {await response.text()}"
                     )
         except asyncio.TimeoutError as err:
-            raise FoxEnergyConnectionError(f"Connection timeout to {self.host}") from err
+            raise FoxEnergyConnectionError(
+                f"Connection timeout to {self.host}"
+            ) from err
         except aiohttp.ClientConnectorError as err:
             raise FoxEnergyConnectionError(f"Cannot connect to {self.host}") from err
         except aiohttp.ClientError as err:
@@ -173,9 +175,15 @@ class FoxEnergyDataProcessor:
         """
         result = {
             # Energy (kWh)
-            "energia_pobrana_l1": cls.parse_energy_wh(total_energy["active_energy_import"][0]),
-            "energia_pobrana_l2": cls.parse_energy_wh(total_energy["active_energy_import"][1]),
-            "energia_pobrana_l3": cls.parse_energy_wh(total_energy["active_energy_import"][2]),
+            "energia_pobrana_l1": cls.parse_energy_wh(
+                total_energy["active_energy_import"][0]
+            ),
+            "energia_pobrana_l2": cls.parse_energy_wh(
+                total_energy["active_energy_import"][1]
+            ),
+            "energia_pobrana_l3": cls.parse_energy_wh(
+                total_energy["active_energy_import"][2]
+            ),
             # Power (W)
             "moc_czynna_l1": cls.parse_float(current_params["power_active"][0]),
             "moc_czynna_l2": cls.parse_float(current_params["power_active"][1]),
@@ -210,15 +218,11 @@ class FoxEnergyDataProcessor:
             3,
         )
         result["moc_czynna_suma"] = round(
-            result["moc_czynna_l1"]
-            + result["moc_czynna_l2"]
-            + result["moc_czynna_l3"],
+            result["moc_czynna_l1"] + result["moc_czynna_l2"] + result["moc_czynna_l3"],
             1,
         )
         result["natezenie_suma"] = round(
-            result["natezenie_l1"]
-            + result["natezenie_l2"]
-            + result["natezenie_l3"],
+            result["natezenie_l1"] + result["natezenie_l2"] + result["natezenie_l3"],
             2,
         )
 

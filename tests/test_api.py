@@ -41,10 +41,12 @@ class TestFoxEnergyAPI:
             mock_session = MagicMock()
             mock_session.__aenter__ = AsyncMock(return_value=mock_session)
             mock_session.__aexit__ = AsyncMock(return_value=None)
-            mock_session.get = MagicMock(return_value=AsyncMock(
-                __aenter__=AsyncMock(return_value=mock_response),
-                __aexit__=AsyncMock(return_value=None)
-            ))
+            mock_session.get = MagicMock(
+                return_value=AsyncMock(
+                    __aenter__=AsyncMock(return_value=mock_response),
+                    __aexit__=AsyncMock(return_value=None),
+                )
+            )
             mock_session_class.return_value = mock_session
 
             result = await api.get_current_parameters()
@@ -65,10 +67,12 @@ class TestFoxEnergyAPI:
             mock_session = MagicMock()
             mock_session.__aenter__ = AsyncMock(return_value=mock_session)
             mock_session.__aexit__ = AsyncMock(return_value=None)
-            mock_session.get = MagicMock(return_value=AsyncMock(
-                __aenter__=AsyncMock(return_value=mock_response),
-                __aexit__=AsyncMock(return_value=None)
-            ))
+            mock_session.get = MagicMock(
+                return_value=AsyncMock(
+                    __aenter__=AsyncMock(return_value=mock_response),
+                    __aexit__=AsyncMock(return_value=None),
+                )
+            )
             mock_session_class.return_value = mock_session
 
             with pytest.raises(FoxEnergyInvalidResponse):
@@ -87,10 +91,12 @@ class TestFoxEnergyAPI:
             mock_session = MagicMock()
             mock_session.__aenter__ = AsyncMock(return_value=mock_session)
             mock_session.__aexit__ = AsyncMock(return_value=None)
-            mock_session.get = MagicMock(return_value=AsyncMock(
-                __aenter__=AsyncMock(return_value=mock_response),
-                __aexit__=AsyncMock(return_value=None)
-            ))
+            mock_session.get = MagicMock(
+                return_value=AsyncMock(
+                    __aenter__=AsyncMock(return_value=mock_response),
+                    __aexit__=AsyncMock(return_value=None),
+                )
+            )
             mock_session_class.return_value = mock_session
 
             with pytest.raises(FoxEnergyConnectionError) as exc_info:
@@ -103,7 +109,9 @@ class TestFoxEnergyAPI:
         """Test 3-phase device detection."""
         api = FoxEnergyAPI("192.168.1.100")
 
-        with patch.object(api, "get_current_parameters", return_value=mock_3phase_current):
+        with patch.object(
+            api, "get_current_parameters", return_value=mock_3phase_current
+        ):
             device_type = await api.detect_device_type()
 
         assert device_type == DEVICE_TYPE_3PHASE
@@ -113,7 +121,9 @@ class TestFoxEnergyAPI:
         """Test 1-phase device detection."""
         api = FoxEnergyAPI("192.168.1.100")
 
-        with patch.object(api, "get_current_parameters", return_value=mock_1phase_current):
+        with patch.object(
+            api, "get_current_parameters", return_value=mock_1phase_current
+        ):
             device_type = await api.detect_device_type()
 
         assert device_type == DEVICE_TYPE_1PHASE
