@@ -1,0 +1,139 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Configure Fox Energy Device",
+        "description": "Enter the IP address of your Fox Energy meter. If no manual IP is provided, automatic network scanning will attempt to discover devices.",
+        "data": {
+          "host": "Device IP Address",
+          "name": "Device Name (optional)",
+          "timeout": "Connection Timeout (seconds)",
+          "scan_interval": "Update Interval (seconds)"
+        }
+      },
+      "discovery_confirm": {
+        "title": "Fox Energy Device Found",
+        "description": "Add Fox Energy device at {host}?"
+      }
+    },
+    "error": {
+      "cannot_connect": "Cannot connect to device. Check IP address and network connectivity.",
+      "invalid_host": "Invalid IP address format.",
+      "invalid_discovery_info": "Invalid discovery information."
+    },
+    "abort": {
+      "already_configured": "This device is already configured.",
+      "cannot_connect": "Cannot connect to device.",
+      "invalid_discovery_info": "Invalid discovery information."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Fox Energy Options",
+        "description": "Configure Fox Energy meter options",
+        "data": {
+          "scan_interval": "Update Interval (seconds)",
+          "timeout": "Connection Timeout (seconds)"
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "energia_pobrana_l1": {
+        "name": "Energy Import L1"
+      },
+      "energia_pobrana_l2": {
+        "name": "Energy Import L2"
+      },
+      "energia_pobrana_l3": {
+        "name": "Energy Import L3"
+      },
+      "energia_pobrana_suma": {
+        "name": "Energy Import Total"
+      },
+      "energia_pobrana": {
+        "name": "Energy Import"
+      },
+      "moc_czynna_l1": {
+        "name": "Active Power L1"
+      },
+      "moc_czynna_l2": {
+        "name": "Active Power L2"
+      },
+      "moc_czynna_l3": {
+        "name": "Active Power L3"
+      },
+      "moc_czynna_suma": {
+        "name": "Active Power Total"
+      },
+      "moc_czynna": {
+        "name": "Active Power"
+      },
+      "natezenie_l1": {
+        "name": "Current L1"
+      },
+      "natezenie_l2": {
+        "name": "Current L2"
+      },
+      "natezenie_l3": {
+        "name": "Current L3"
+      },
+      "natezenie_suma": {
+        "name": "Current Total"
+      },
+      "natezenie": {
+        "name": "Current"
+      },
+      "napiecie_l1": {
+        "name": "Voltage L1"
+      },
+      "napiecie_l2": {
+        "name": "Voltage L2"
+      },
+      "napiecie_l3": {
+        "name": "Voltage L3"
+      },
+      "napiecie": {
+        "name": "Voltage"
+      },
+      "moc_reaktywna_l1": {
+        "name": "Reactive Power L1"
+      },
+      "moc_reaktywna_l2": {
+        "name": "Reactive Power L2"
+      },
+      "moc_reaktywna_l3": {
+        "name": "Reactive Power L3"
+      },
+      "moc_reaktywna": {
+        "name": "Reactive Power"
+      },
+      "cos_phi_l1": {
+        "name": "Power Factor L1"
+      },
+      "cos_phi_l2": {
+        "name": "Power Factor L2"
+      },
+      "cos_phi_l3": {
+        "name": "Power Factor L3"
+      },
+      "cos_phi": {
+        "name": "Power Factor"
+      },
+      "czestotliwosc_l1": {
+        "name": "Frequency L1"
+      },
+      "czestotliwosc_l2": {
+        "name": "Frequency L2"
+      },
+      "czestotliwosc_l3": {
+        "name": "Frequency L3"
+      },
+      "czestotliwosc": {
+        "name": "Frequency"
+      }
+    }
+  }
+}

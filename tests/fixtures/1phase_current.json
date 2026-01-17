@@ -1,0 +1,9 @@
+{
+  "status": "ok",
+  "voltage": "234.8",
+  "current": "0.00",
+  "power_active": "3.0",
+  "power_reactive": "0.0",
+  "frequency": "50.00",
+  "power_factor": "-0.48"
+}

@@ -1,0 +1,139 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Konfiguruj urządzenie Fox Energy",
+        "description": "Wpisz adres IP licznika Fox Energy. Jeśli nie podasz IP, system spróbuje automatycznie skanować sieć w poszukiwaniu urządzeń.",
+        "data": {
+          "host": "Adres IP urządzenia",
+          "name": "Nazwa urządzenia (opcjonalnie)",
+          "timeout": "Timeout połączenia (sekundy)",
+          "scan_interval": "Interwał aktualizacji (sekundy)"
+        }
+      },
+      "discovery_confirm": {
+        "title": "Znalezione urządzenie Fox Energy",
+        "description": "Dodać urządzenie Fox Energy na adresie {host}?"
+      }
+    },
+    "error": {
+      "cannot_connect": "Nie można połączyć się z urządzeniem. Sprawdź adres IP i łączność sieciową.",
+      "invalid_host": "Nieprawidłowy format adresu IP.",
+      "invalid_discovery_info": "Nieprawidłowe informacje o odkryciu."
+    },
+    "abort": {
+      "already_configured": "To urządzenie jest już skonfigurowane.",
+      "cannot_connect": "Nie można połączyć się z urządzeniem.",
+      "invalid_discovery_info": "Nieprawidłowe informacje o odkryciu."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Opcje Fox Energy",
+        "description": "Skonfiguruj opcje licznika Fox Energy",
+        "data": {
+          "scan_interval": "Interwał aktualizacji (sekundy)",
+          "timeout": "Timeout połączenia (sekundy)"
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "energia_pobrana_l1": {
+        "name": "Energia pobrana L1"
+      },
+      "energia_pobrana_l2": {
+        "name": "Energia pobrana L2"
+      },
+      "energia_pobrana_l3": {
+        "name": "Energia pobrana L3"
+      },
+      "energia_pobrana_suma": {
+        "name": "Energia pobrana razem"
+      },
+      "energia_pobrana": {
+        "name": "Energia pobrana"
+      },
+      "moc_czynna_l1": {
+        "name": "Moc czynna L1"
+      },
+      "moc_czynna_l2": {
+        "name": "Moc czynna L2"
+      },
+      "moc_czynna_l3": {
+        "name": "Moc czynna L3"
+      },
+      "moc_czynna_suma": {
+        "name": "Moc czynna razem"
+      },
+      "moc_czynna": {
+        "name": "Moc czynna"
+      },
+      "natezenie_l1": {
+        "name": "Natężenie L1"
+      },
+      "natezenie_l2": {
+        "name": "Natężenie L2"
+      },
+      "natezenie_l3": {
+        "name": "Natężenie L3"
+      },
+      "natezenie_suma": {
+        "name": "Natężenie razem"
+      },
+      "natezenie": {
+        "name": "Natężenie"
+      },
+      "napiecie_l1": {
+        "name": "Napięcie L1"
+      },
+      "napiecie_l2": {
+        "name": "Napięcie L2"
+      },
+      "napiecie_l3": {
+        "name": "Napięcie L3"
+      },
+      "napiecie": {
+        "name": "Napięcie"
+      },
+      "moc_reaktywna_l1": {
+        "name": "Moc bierna L1"
+      },
+      "moc_reaktywna_l2": {
+        "name": "Moc bierna L2"
+      },
+      "moc_reaktywna_l3": {
+        "name": "Moc bierna L3"
+      },
+      "moc_reaktywna": {
+        "name": "Moc bierna"
+      },
+      "cos_phi_l1": {
+        "name": "Współczynnik mocy L1"
+      },
+      "cos_phi_l2": {
+        "name": "Współczynnik mocy L2"
+      },
+      "cos_phi_l3": {
+        "name": "Współczynnik mocy L3"
+      },
+      "cos_phi": {
+        "name": "Współczynnik mocy"
+      },
+      "czestotliwosc_l1": {
+        "name": "Częstotliwość L1"
+      },
+      "czestotliwosc_l2": {
+        "name": "Częstotliwość L2"
+      },
+      "czestotliwosc_l3": {
+        "name": "Częstotliwość L3"
+      },
+      "czestotliwosc": {
+        "name": "Częstotliwość"
+      }
+    }
+  }
+}

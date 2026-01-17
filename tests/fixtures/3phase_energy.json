@@ -1,0 +1,7 @@
+{
+  "status": "ok",
+  "active_energy_import": [4951294, 1326375, 6228263],
+  "active_energy_export": [24, 9, 144],
+  "reactive_energy_import": [192, 908, 4163],
+  "reactive_energy_export": [2316914, 562113, 1919626]
+}
