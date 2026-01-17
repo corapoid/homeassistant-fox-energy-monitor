@@ -7,18 +7,18 @@ from typing import Any
 
 import voluptuous as vol
 from homeassistant import config_entries
-from homeassistant.const import CONF_HOST, CONF_NAME, CONF_TIMEOUT
+from homeassistant.const import CONF_NAME, CONF_TIMEOUT
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.data_entry_flow import FlowResult
 
 from .api import FoxEnergyAPI, FoxEnergyConnectionError, FoxEnergyInvalidResponse
-from .const import DOMAIN, DEFAULT_TIMEOUT, DEFAULT_SCAN_INTERVAL, CONF_SCAN_INTERVAL
+from .const import CONF_HOST, CONF_SCAN_INTERVAL, DEFAULT_TIMEOUT, DEFAULT_SCAN_INTERVAL, DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 
 STEP_USER_DATA_SCHEMA = vol.Schema(
     {
-        vol.Required(CONF_HOST): str,
+        vol.Optional(CONF_HOST): str,
         vol.Optional(CONF_NAME): str,
         vol.Optional(CONF_TIMEOUT, default=DEFAULT_TIMEOUT): int,
         vol.Optional(CONF_SCAN_INTERVAL, default=DEFAULT_SCAN_INTERVAL): int,
@@ -139,10 +139,11 @@ class FoxEnergyConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         """
         errors: dict[str, str] = {}
 
-        if user_input is not None:
-            # Validate host
-            host = user_input[CONF_HOST].strip()
+        # If host not provided, try discovery first
+        host = user_input.get(CONF_HOST, "").strip() if user_input else ""
 
+        if host:
+            # Manual IP entry - validate and connect
             # Try to parse as IP
             try:
                 ipaddress.ip_address(host)
@@ -169,9 +170,17 @@ class FoxEnergyConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                         CONF_SCAN_INTERVAL: user_input[CONF_SCAN_INTERVAL],
                     },
                 )
-
-        # First, try discovery
-        if not self.discovered_devices:
+        else:
+            # No host provided - try discovery first
+            # First, try discovery
+            if not self.discovered_devices:
+                _LOGGER.info("Starting network scan for Fox Energy devices...")
+                self.discovered_devices = await scan_network_for_devices(self.hass)
+                _LOGGER.info(
+                    "Found %d Fox Energy devices: %s",
+                    len(self.discovered_devices),
+                    self.discovered_devices,
+                )
             _LOGGER.info("Starting network scan for Fox Energy devices...")
             self.discovered_devices = await scan_network_for_devices(self.hass)
             _LOGGER.info(

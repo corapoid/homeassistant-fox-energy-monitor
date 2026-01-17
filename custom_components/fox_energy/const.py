@@ -239,6 +239,7 @@ SENSORS_1PHASE = {
 }
 
 # Config flow
+CONF_HOST = "host"
 CONF_SCAN_INTERVAL = "scan_interval"
 
 # Error messages
