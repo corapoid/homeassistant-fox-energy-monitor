@@ -1,7 +1,6 @@
 """Base entity for Fox Energy integration."""
 
 from homeassistant.components.sensor import SensorEntity
-from homeassistant.const import ATTR_MANUFACTURER
 from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 

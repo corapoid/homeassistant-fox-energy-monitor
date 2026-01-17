@@ -10,7 +10,6 @@ from homeassistant import config_entries
 from homeassistant.const import CONF_HOST, CONF_NAME, CONF_TIMEOUT
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.data_entry_flow import FlowResult
-from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from .api import FoxEnergyAPI, FoxEnergyConnectionError, FoxEnergyInvalidResponse
 from .const import DOMAIN, DEFAULT_TIMEOUT, DEFAULT_SCAN_INTERVAL, CONF_SCAN_INTERVAL

@@ -4,8 +4,6 @@ Note: Full config_flow tests require Python 3.10+ due to union type syntax.
 These tests focus on constants and basic validation that can run on Python 3.9+.
 """
 
-import pytest
-
 from custom_components.fox_energy.const import (
     CONF_SCAN_INTERVAL,
     DEFAULT_SCAN_INTERVAL,

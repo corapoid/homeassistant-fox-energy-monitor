@@ -6,7 +6,6 @@ from typing import Final
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_HOST, CONF_TIMEOUT, Platform
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from .const import CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL, DEFAULT_TIMEOUT, DOMAIN
 from .coordinator import FoxEnergyCoordinator

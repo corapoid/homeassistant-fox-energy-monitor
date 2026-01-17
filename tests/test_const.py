@@ -1,7 +1,5 @@
 """Tests for Fox Energy constants."""
 
-import pytest
-
 from custom_components.fox_energy.const import (
     CONF_SCAN_INTERVAL,
     DEFAULT_SCAN_INTERVAL,

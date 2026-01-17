@@ -6,7 +6,7 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from .const import DEVICE_TYPE_1PHASE, DEVICE_TYPE_3PHASE, DOMAIN, SENSORS_1PHASE, SENSORS_3PHASE
+from .const import DEVICE_TYPE_3PHASE, DOMAIN, SENSORS_1PHASE, SENSORS_3PHASE
 from .coordinator import FoxEnergyCoordinator
 from .entity import FoxEnergySensor
 

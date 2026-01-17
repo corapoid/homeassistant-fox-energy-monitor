@@ -15,7 +15,6 @@ from .api import (
 )
 from .const import (
     DEFAULT_SCAN_INTERVAL,
-    DEVICE_TYPE_1PHASE,
     DEVICE_TYPE_3PHASE,
 )
 
