@@ -1,6 +1,5 @@
 """Config flow for Fox Energy integration."""
 
-import asyncio
 import ipaddress
 import logging
 from typing import Any
@@ -18,7 +17,7 @@ _LOGGER = logging.getLogger(__name__)
 
 STEP_USER_DATA_SCHEMA = vol.Schema(
     {
-        vol.Optional(CONF_HOST): str,
+        vol.Required(CONF_HOST): str,
         vol.Optional(CONF_NAME): str,
         vol.Optional(CONF_TIMEOUT, default=DEFAULT_TIMEOUT): int,
         vol.Optional(CONF_SCAN_INTERVAL, default=DEFAULT_SCAN_INTERVAL): int,
@@ -45,78 +44,10 @@ async def validate_host(hass: HomeAssistant, host: str) -> bool:
         return False
 
 
-async def scan_network_for_devices(
-    hass: HomeAssistant, subnet: str = None
-) -> list[str]:
-    """Scan network for Fox Energy devices.
-
-    Args:
-        hass: Home Assistant instance
-        subnet: Network subnet to scan (e.g., "192.168.1")
-
-    Returns:
-        List of discovered device IPs
-    """
-    found_devices = []
-
-    # If subnet not specified, try to detect from Home Assistant's network
-    if subnet is None:
-        # Try to get network info from HA - fallback to common private subnets
-        # This scans the most common home network ranges
-        try:
-            import socket
-
-            hostname = socket.gethostname()
-            local_ip = socket.gethostbyname(hostname)
-            # Extract subnet from local IP (e.g., "192.168.1.50" -> "192.168.1")
-            subnet = ".".join(local_ip.split(".")[:-1])
-        except Exception:
-            # Cannot detect network, return empty - user must enter IP manually
-            return found_devices
-
-    # Scan addresses in subnet
-    base_parts = subnet.rsplit(".", 1)
-    if len(base_parts) == 2:
-        base = base_parts[0]
-        # Scan range 1-254
-        scan_range = range(1, 255)
-    else:
-        return found_devices
-
-    # Create tasks for scanning (limit concurrency)
-    tasks = []
-    semaphore = asyncio.Semaphore(10)
-
-    async def check_device(ip: str) -> str | None:
-        async with semaphore:
-            try:
-                api = FoxEnergyAPI(ip, timeout=1)
-                await asyncio.wait_for(
-                    api.detect_device_type(),
-                    timeout=1,
-                )
-                return ip
-            except Exception:
-                return None
-
-    # Prepare all IP addresses to check
-    for i in scan_range:
-        ip = f"{base}.{i}"
-        tasks.append(check_device(ip))
-
-    # Run all checks concurrently
-    if tasks:
-        results = await asyncio.gather(*tasks, return_exceptions=False)
-        found_devices = [ip for ip in results if ip is not None]
-
-    return found_devices
-
-
 class FoxEnergyConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Config flow for Fox Energy integration."""
 
     VERSION = 1
-    discovered_devices: list[str] = []
 
     @staticmethod
     @callback
@@ -139,12 +70,10 @@ class FoxEnergyConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         """
         errors: dict[str, str] = {}
 
-        # If host not provided, try discovery first
-        host = user_input.get(CONF_HOST, "").strip() if user_input else ""
+        if user_input is not None:
+            host = user_input.get(CONF_HOST, "").strip()
 
-        if host:
-            # Manual IP entry - validate and connect
-            # Try to parse as IP
+            # Validate IP address format
             try:
                 ipaddress.ip_address(host)
             except ValueError:
@@ -170,87 +99,11 @@ class FoxEnergyConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                         CONF_SCAN_INTERVAL: user_input[CONF_SCAN_INTERVAL],
                     },
                 )
-        else:
-            # No host provided - try discovery first
-            # First, try discovery
-            if not self.discovered_devices:
-                _LOGGER.info("Starting network scan for Fox Energy devices...")
-                self.discovered_devices = await scan_network_for_devices(self.hass)
-                _LOGGER.info(
-                    "Found %d Fox Energy devices: %s",
-                    len(self.discovered_devices),
-                    self.discovered_devices,
-                )
-            _LOGGER.info("Starting network scan for Fox Energy devices...")
-            self.discovered_devices = await scan_network_for_devices(self.hass)
-            _LOGGER.info(
-                "Found %d Fox Energy devices: %s",
-                len(self.discovered_devices),
-                self.discovered_devices,
-            )
 
         return self.async_show_form(
             step_id="user",
             data_schema=STEP_USER_DATA_SCHEMA,
             errors=errors,
-            description_placeholders={
-                "discovered": ", ".join(self.discovered_devices)
-                if self.discovered_devices
-                else "none"
-            },
-        )
-
-    async def async_step_discovery(self, discovery_info: dict[str, Any]) -> FlowResult:
-        """Handle discovery step.
-
-        Args:
-            discovery_info: Discovery information
-
-        Returns:
-            Flow result
-        """
-        host = discovery_info.get(CONF_HOST)
-
-        if not host:
-            return self.async_abort(reason="invalid_discovery_info")
-
-        # Check if already configured
-        await self.async_set_unique_id(host)
-        self._abort_if_unique_id_configured()
-
-        # Validate connection
-        if not await validate_host(self.hass, host):
-            return self.async_abort(reason="cannot_connect")
-
-        return self.async_show_form(
-            step_id="discovery_confirm",
-            description_placeholders={CONF_HOST: host},
-        )
-
-    async def async_step_discovery_confirm(
-        self, user_input: dict[str, Any] | None = None
-    ) -> FlowResult:
-        """Handle discovery confirmation.
-
-        Args:
-            user_input: User input
-
-        Returns:
-            Flow result
-        """
-        if user_input is not None:
-            host = self.discovery_data.get(CONF_HOST)
-            return self.async_create_entry(
-                title=f"Fox Energy {host}",
-                data={
-                    CONF_HOST: host,
-                    CONF_TIMEOUT: DEFAULT_TIMEOUT,
-                    CONF_SCAN_INTERVAL: DEFAULT_SCAN_INTERVAL,
-                },
-            )
-
-        return self.async_show_form(
-            step_id="discovery_confirm",
         )
 
 
