@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.4.0] - 2025-06-03
+
+### Fixed
+- **Critical bug fix**: 1-phase meters now correctly report energy values
+  - 1-phase Fox Energy meters return energy in 0.001 Wh (mWh) units, not Wh
+  - Previously, energy readings were ~1000x too high (e.g., 1,956,329 kWh instead of 1,956 kWh)
+  - Added new `parse_energy_1phase()` method that correctly divides by 1,000,000 instead of 1,000
+
+### Changed
+- Updated `process_1phase_data()` to use the new 1-phase specific energy parser
+- Improved code documentation explaining the difference between 3-phase and 1-phase energy formats
+
+### Technical
+- Added new tests for 1-phase energy parsing
+- Updated existing tests to reflect correct energy values
+
+## [0.3.0] - 2026-01-18
+
+### Changed
+- Removed automatic network discovery feature
+- Fixed sensor icons
+
 ## [0.1.0] - 2026-01-17
 
 ### Added

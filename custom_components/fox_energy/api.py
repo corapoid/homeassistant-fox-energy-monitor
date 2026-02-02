@@ -125,21 +125,46 @@ class FoxEnergyDataProcessor:
 
     @staticmethod
     def parse_energy_wh(value: Any) -> float:
-        """Convert energy value from Wh to kWh.
+        """Convert energy value from Wh to kWh (for 3-phase meters).
+
+        3-phase meters return energy in Wh as integers.
 
         Args:
-            value: Energy value (int or string with leading zeros)
+            value: Energy value in Wh (int or float)
 
         Returns:
             Energy in kWh rounded to 3 decimals
         """
         try:
-            # Convert to int first (handles strings with leading zeros)
             wh = int(value) if isinstance(value, str) else float(value)
             kwh = wh / 1000
             return round(kwh, 3)
         except (ValueError, TypeError) as err:
             _LOGGER.error("Error parsing energy value %s: %s", value, err)
+            return 0.0
+
+    @staticmethod
+    def parse_energy_1phase(value: Any) -> float:
+        """Convert energy value from 1-phase meter format to kWh.
+
+        1-phase meters return energy as a string representing the value in
+        0.001 Wh (mWh). For example, "01956328901" means 1956.328901 kWh.
+        This is different from 3-phase meters which return Wh as integers.
+
+        Args:
+            value: Energy value string (in 0.001 Wh units, with leading zeros)
+
+        Returns:
+            Energy in kWh rounded to 3 decimals
+        """
+        try:
+            # 1-phase meters return value in 0.001 Wh (mWh) as a string
+            # Divide by 1,000,000 to get kWh
+            raw_value = int(value) if isinstance(value, str) else float(value)
+            kwh = raw_value / 1_000_000
+            return round(kwh, 3)
+        except (ValueError, TypeError) as err:
+            _LOGGER.error("Error parsing 1-phase energy value %s: %s", value, err)
             return 0.0
 
     @staticmethod
@@ -244,8 +269,8 @@ class FoxEnergyDataProcessor:
             Unified dictionary with all sensor data
         """
         result = {
-            # Energy (kWh)
-            "energia_pobrana": cls.parse_energy_wh(total_energy["active_energy"]),
+            # Energy (kWh) - 1-phase meters use different units (0.001 Wh)
+            "energia_pobrana": cls.parse_energy_1phase(total_energy["active_energy"]),
             # Power (W)
             "moc_czynna": cls.parse_float(current_params["power_active"]),
             # Current (A)

@@ -138,9 +138,10 @@ class TestFoxEnergyDataProcessor:
         assert result == 1.0
 
     def test_parse_energy_wh_string(self):
-        """Test energy parsing from string with leading zeros."""
-        result = FoxEnergyDataProcessor.parse_energy_wh("01871193477")
-        assert result == 1871193.477
+        """Test energy parsing from string with leading zeros (3-phase format)."""
+        # 3-phase meters return Wh as integers
+        result = FoxEnergyDataProcessor.parse_energy_wh(4951294)
+        assert result == 4951.294
 
     def test_parse_energy_wh_invalid(self):
         """Test energy parsing with invalid value."""
@@ -150,6 +151,28 @@ class TestFoxEnergyDataProcessor:
     def test_parse_energy_wh_none(self):
         """Test energy parsing with None."""
         result = FoxEnergyDataProcessor.parse_energy_wh(None)
+        assert result == 0.0
+
+    def test_parse_energy_1phase_string(self):
+        """Test 1-phase energy parsing from string (mWh format)."""
+        # 1-phase meters return value in 0.001 Wh (mWh) as string
+        # "01871193477" mWh = 1871.193 kWh
+        result = FoxEnergyDataProcessor.parse_energy_1phase("01871193477")
+        assert result == 1871.193
+
+    def test_parse_energy_1phase_with_leading_zeros(self):
+        """Test 1-phase energy parsing handles leading zeros."""
+        result = FoxEnergyDataProcessor.parse_energy_1phase("00001000000")
+        assert result == 1.0
+
+    def test_parse_energy_1phase_invalid(self):
+        """Test 1-phase energy parsing with invalid value."""
+        result = FoxEnergyDataProcessor.parse_energy_1phase("invalid")
+        assert result == 0.0
+
+    def test_parse_energy_1phase_none(self):
+        """Test 1-phase energy parsing with None."""
+        result = FoxEnergyDataProcessor.parse_energy_1phase(None)
         assert result == 0.0
 
     def test_parse_float_string(self):
@@ -219,8 +242,9 @@ class TestFoxEnergyDataProcessor:
             mock_1phase_current, mock_1phase_energy
         )
 
-        # Check energy (converted from Wh to kWh)
-        assert result["energia_pobrana"] == 1871193.477
+        # Check energy (converted from 0.001 Wh to kWh)
+        # "01871193477" mWh = 1871.193 kWh
+        assert result["energia_pobrana"] == 1871.193
 
         # Check power
         assert result["moc_czynna"] == 3.0
